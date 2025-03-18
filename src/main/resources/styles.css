@@ -1,0 +1,98 @@
+/* Fondo general con un degradado sutil */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #2c3e50, #4ca1af);
+    -fx-font-family: "Arial", sans-serif;
+}
+
+/* Estilo del título */
+.label {
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Campos de texto */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+}
+
+/* Botón de login */
+.button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* Botón de cerrar sesión en rojo */
+.btn-danger {
+    -fx-background-color: #e74c3c;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Estilo de la tabla */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 5px;
+}
+
+/* Evitar que los encabezados de la tabla recorten el texto */
+.table-view .column-header .label {
+    -fx-text-overrun: clip;
+    -fx-wrap-text: true;
+    -fx-alignment: CENTER;
+    -fx-background-color: #2980b9;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+
+.table-row-cell:odd {
+    -fx-background-color: #ecf0f1;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #bdc3c7;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+/* Estilo para los botones dentro de la tabla */
+.table-cell .button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 8px;
+}
+
+.table-cell .button:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Estilo para los cuadros de diálogo */
+.dialog-pane {
+    -fx-background-color: #ecf0f1;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: #2c3e50;
+}

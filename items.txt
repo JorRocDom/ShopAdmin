@@ -1,0 +1,4 @@
+Processador;2;adad;aadad;1,00;1;3,5;8;AM4
+FontAlimentacio;1;corsairfont;corsair;50,00;5;750;80 Plus Gold;true
+TargetaGrafica;1;rtx 2070;nvidia;300,00;10;8;1,7;220
+TargetaGrafica;3;rtx 2080;nvidia;350,00;10;8;1,7;220
