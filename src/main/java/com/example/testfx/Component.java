@@ -6,6 +6,15 @@ public class Component {
     private String marca;
     private double preu;
     private int stock;
+    private String imagePath;
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 
     public Component(int id, String nom, String marca, double preu, int stock) {
         this.id = id;

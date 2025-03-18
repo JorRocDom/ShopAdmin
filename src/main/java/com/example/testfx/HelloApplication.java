@@ -18,6 +18,8 @@ import org.kordamp.bootstrapfx.BootstrapFX;
 import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.util.Optional;
+import javafx.stage.FileChooser;
+import java.io.File;
 
 public class HelloApplication extends Application {
     private ObservableList<Component> data = FXCollections.observableArrayList();
@@ -161,6 +163,36 @@ public class HelloApplication extends Application {
         colStock.setPrefWidth(100);
         colEliminar.setPrefWidth(100);
 
+        TableColumn<Component, String> colImagen = new TableColumn<>("Imagen");
+
+        colImagen.setCellValueFactory(new PropertyValueFactory<>("imagePath"));
+        colImagen.setCellFactory(param -> new TableCell<>() {
+            private final ImageView imageView = new ImageView();
+
+            @Override
+            protected void updateItem(String imagePath, boolean empty) {
+                super.updateItem(imagePath, empty);
+                if (empty || imagePath == null || imagePath.isEmpty()) {
+                    setGraphic(null);
+                } else {
+                    try {
+                        Image image = new Image(getClass().getResourceAsStream(imagePath));
+                        imageView.setImage(image);
+                        imageView.setFitWidth(50);  // Ajusta el tamaño según necesites
+                        imageView.setFitHeight(50);
+                        setGraphic(imageView);
+                    } catch (Exception e) {
+                        setGraphic(null);
+                        System.err.println("❌ Error al cargar la imagen: " + e.getMessage());
+                    }
+                }
+            }
+        });
+
+        colImagen.setPrefWidth(80);
+        tableView.getColumns().add(colImagen);
+
+
         colEliminar.setCellFactory(param -> new TableCell<>() {
             private final Button deleteButton = new Button("❌");
 
@@ -198,6 +230,7 @@ public class HelloApplication extends Application {
     }
 
     public void agregarProducto() {
+
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Agregar Producto");
         dialog.setHeaderText("Ingrese los datos del producto en el formato, siguiendo este ejemplo:\n" +
