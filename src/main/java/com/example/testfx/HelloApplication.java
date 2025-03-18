@@ -13,11 +13,16 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.shape.Path;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 import javafx.scene.layout.VBox;
+import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class HelloApplication extends Application {
     private ObservableList<Component> data = FXCollections.observableArrayList();
@@ -198,56 +203,106 @@ public class HelloApplication extends Application {
     }
 
     public void agregarProducto() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Agregar Producto");
-        dialog.setHeaderText("Ingrese los datos del producto en el formato, siguiendo este ejemplo:\n" +
-                "EJEMPLO: Procesador,Intel Core i7,Intel,350.00,10 \n" +
-                "(Componente, nombre, marca, precio, stock)\n");
+        Stage addStage = new Stage();
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setVgap(10);
+        gridPane.setHgap(10);
 
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(datos -> {
-            String[] partes = datos.split(",");
-            if (partes.length == 5) {
+        Label title = new Label("Agregar Producto");
+        TextField tipoField = new TextField();
+        tipoField.setPromptText("Tipo (Procesador, TargetaGrafica, etc.)");
+        TextField nombreField = new TextField();
+        nombreField.setPromptText("Nombre");
+        TextField marcaField = new TextField();
+        marcaField.setPromptText("Marca");
+        TextField precioField = new TextField();
+        precioField.setPromptText("Precio");
+        TextField stockField = new TextField();
+        stockField.setPromptText("Stock");
+
+        Button imageButton = new Button("Subir Imagen");
+        Label imageLabel = new Label("Imagen no seleccionada");
+
+        imageButton.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg"));
+            File selectedFile = fileChooser.showOpenDialog(addStage);
+            if (selectedFile != null) {
+                imageLabel.setText(selectedFile.getName());
                 try {
-                    String tipo = partes[0].trim();
-                    String nombre = partes[1].trim();
-                    String marca = partes[2].trim();
-                    double precio = Double.parseDouble(partes[3].trim());
-                    int stock = Integer.parseInt(partes[4].trim());
+                    java.nio.file.Path destino = Paths.get("src/main/resources/images/" + selectedFile.getName());
 
-                    int nuevoId = data.size() + 1;
-                    Component nuevo;
+                    Files.copy(selectedFile.toPath(), destino, StandardCopyOption.REPLACE_EXISTING);
 
-                    switch (tipo.toLowerCase()) {
-                        case "procesador":
-                            nuevo = new Processador(nuevoId, nombre, marca, precio, stock, 3.5, 8, "AM4");
-                            break;
-                        case "targetagrafica":
-                            nuevo = new TargetaGrafica(nuevoId, nombre, marca, precio, stock, 8, 1.7, 220);
-                            break;
-                        case "discdur":
-                            nuevo = new DiscDur(nuevoId, nombre, marca, precio, stock, 1000, "SSD");
-                            break;
-                        case "fontalimentacio":
-                            nuevo = new FontAlimentacio(nuevoId, nombre, marca, precio, stock, 750, "80 Plus Gold", true);
-                            break;
-                        default:
-                            System.out.println("❌ Tipo no reconocido.");
-                            return;
-                    }
+                    imageLabel.setText("Imagen guardada: " + destino.toString());
 
-                    GestorComponentes.guardarComponente(nuevo);
-                    data.add(nuevo);
-
-                    System.out.println("✅ Producto agregado correctamente.");
-                } catch (Exception e) {
-                    System.out.println("❌ Error en los datos ingresados: " + e.getMessage());
+                } catch (IOException e) {
+                    System.out.println("❌ Error al guardar la imagen: " + e.getMessage());
                 }
-            } else {
-                System.out.println("❌ Formato incorrecto.");
             }
         });
+
+        Button submitButton = new Button("Agregar");
+        submitButton.setOnAction(event -> {
+            try {
+                String tipo = tipoField.getText().trim();
+                String nombre = nombreField.getText().trim();
+                String marca = marcaField.getText().trim();
+                double precio = Double.parseDouble(precioField.getText().trim());
+                int stock = Integer.parseInt(stockField.getText().trim());
+
+                int nuevoId = data.size() + 1;
+                Component nuevo;
+
+                switch (tipo.toLowerCase()) {
+                    case "procesador":
+                        nuevo = new Processador(nuevoId, nombre, marca, precio, stock, 3.5, 8, "AM4");
+                        break;
+                    case "targetagrafica":
+                        nuevo = new TargetaGrafica(nuevoId, nombre, marca, precio, stock, 8, 1.7, 220);
+                        break;
+                    case "discdur":
+                        nuevo = new DiscDur(nuevoId, nombre, marca, precio, stock, 1000, "SSD");
+                        break;
+                    case "fontalimentacio":
+                        nuevo = new FontAlimentacio(nuevoId, nombre, marca, precio, stock, 750, "80 Plus Gold", true);
+                        break;
+                    default:
+                        System.out.println("❌ Tipo no reconocido.");
+                        return;
+                }
+
+                GestorComponentes.guardarComponente(nuevo);
+                data.add(nuevo);
+
+                System.out.println("✅ Producto agregado correctamente.");
+                addStage.close();
+            } catch (Exception e) {
+                System.out.println("❌ Error en los datos ingresados: " + e.getMessage());
+            }
+        });
+
+        gridPane.add(title, 0, 0, 2, 1);
+        gridPane.add(tipoField, 0, 1, 2, 1);
+        gridPane.add(nombreField, 0, 2, 2, 1);
+        gridPane.add(marcaField, 0, 3, 2, 1);
+        gridPane.add(precioField, 0, 4, 2, 1);
+        gridPane.add(stockField, 0, 5, 2, 1);
+        gridPane.add(imageButton, 0, 6);
+        gridPane.add(imageLabel, 1, 6);
+        gridPane.add(submitButton, 0, 7, 2, 1);
+
+        GridPane.setHalignment(title, HPos.CENTER);
+        GridPane.setHalignment(submitButton, HPos.CENTER);
+
+        Scene scene = new Scene(gridPane, 400, 500);
+        applyStyles(scene);
+        addStage.setScene(scene);
+        addStage.setTitle("Agregar Producto");
+        addStage.show();
     }
+
 
     private void applyStyles(Scene scene) {
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
